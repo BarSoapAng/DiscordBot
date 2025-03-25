@@ -31,6 +31,9 @@ async function getDailyLeetCodeChallenge() {
                         question {
                             title
                             difficulty
+                            topicTags {
+                                name
+                            }
                         }
                     }
                 }
