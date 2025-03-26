@@ -1,4 +1,4 @@
-require('dotenv').config();
+//require('dotenv').config();
 const { Client, GatewayIntentBits } = require('discord.js');
 const axios = require('axios');
 const schedule = require('node-schedule');
@@ -16,8 +16,6 @@ client.once('ready', () => {
         postDailyChallenge();
     });
 
-    // Post immediately on startup (optional)
-    postDailyChallenge();
 });
 
 async function getDailyLeetCodeChallenge() {
