@@ -4,8 +4,6 @@ const axios = require('axios');
 client.once('ready', () => {
 	console.log(`Logged in as ${client.user.tag}`);
 	
-	
-	
 });
 
 async function getStreak() {
@@ -41,11 +39,6 @@ async function displayStreak(name) {
     }
 
     const { count, current } = challenge.streakCounter;
-    const difficultyEmoji = {
-        Easy: '🟢',
-        Medium: '🟡',
-        Hard: '🔴'
-    }[difficulty] || '❓';
 
     const message = `🌟 **Name: ** ${name}\n**Streak: **${streak}`;
     await channel.send(message);
