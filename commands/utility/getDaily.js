@@ -1,5 +1,5 @@
 //require('dotenv').config();
-const { Client, GatewayIntentBits } = require('discord.js');
+const { SlashCommandBuilder, Client, GatewayIntentBits } = require('discord.js');
 const axios = require('axios');
 const schedule = require('node-schedule');
 
@@ -8,15 +8,24 @@ const CHANNEL_ID = process.env.CHANNEL_ID;
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
-client.once('ready', () => {
-    console.log(`Logged in as ${client.user.tag}`);
+// client.once('ready', () => {
     
-    // Schedule the bot to post daily at 9 AM EST
-    schedule.scheduleJob('0 20 * * *', 'America/New_York', async () => {
-        postDailyChallenge();
-    });
+//     // Schedule the bot to post daily at 9 AM EST
+//     schedule.scheduleJob('0 20 * * *', 'America/New_York', async () => {
+//         postDailyChallenge();
+//     });
 
-});
+// });
+
+module.exports = {
+
+    data: new SlashCommandBuilder()
+		.setName('daily')
+		.setDescription('Replies with Pong!'),
+    async execute(interaction) {
+        await postDailyChallenge(interaction);
+    },
+};
 
 async function getDailyLeetCodeChallenge() {
     try {
@@ -45,16 +54,11 @@ async function getDailyLeetCodeChallenge() {
     }
 }
 
-async function postDailyChallenge() {
-    const channel = await client.channels.fetch(CHANNEL_ID);
-    if (!channel) {
-        console.error('Invalid channel ID.');
-        return;
-    }
+async function postDailyChallenge(interaction) {
 
     const challenge = await getDailyLeetCodeChallenge();
     if (!challenge) {
-        await channel.send('⚠️ Failed to fetch the daily LeetCode challenge.');
+        await interaction.reply('⚠️ Failed to fetch the daily LeetCode challenge.');
         return;
     }
 
@@ -67,5 +71,5 @@ async function postDailyChallenge() {
     }[difficulty] || '❓';
 
     const message = `🌟 **LeetCode Daily Challenge (${challenge.date})** 🌟\n**${title}** ${difficultyEmoji} (${difficulty})\n🔗 ${link}`;
-    await channel.send(message);
+    await interaction.reply(message);
 }
