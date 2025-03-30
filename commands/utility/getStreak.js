@@ -9,38 +9,54 @@ module.exports = {
 		.addStringOption(option => option.setName('username').setDescription('Your LeetCode username').setRequired(true)),
 	async execute(interaction) {
 		const username = interaction.options.getString('username');
-
 		await displayStreak(username, interaction);
 	},
 };
 
-async function getStreak(name) {
+async function getStreak(username) {
 	try {
 		const response = await axios.post('https://leetcode.com/graphql', {
-			query: `
-				query userProfileCalendar($username: "${name}", $year: 2025) {
-					matchedUser(username: $username) {
-						userCalendar(year: $year) {
-						activeYears
-						streak
-						
-					}
-				}
-			`
-		});
+            query: `
+                query userProfileCalendar($username: String!, $year: Int) {
+                    matchedUser(username: $username) {
+                        userCalendar(year: $year) {
+                            activeYears
+                            streak
+                            totalActiveDays
+                            dccBadges {
+                                timestamp
+                                badge {
+                                    name
+                                    icon
+                                }
+                            }
+                            submissionCalendar
+                        }
+                    }
+                }
+            `,
+            variables: {
+                username: username,
+                year: new Date().getFullYear()
+            }
+        }, {
+            headers: {
+                'Content-Type': 'application/json',
+                'User-Agent': 'Mozilla/5.0'
+            },
+			timeout: 10000
+        });
 
-		// totalActiveDays
-		// dccBadges {
-		// 	timestamp
-		// 	badge {
-		// 	name
-		// 	icon
-		// 	}
-		// }
-		// submissionCalendar
-		// }
+		// Ensure we got valid data
+		console.log(response.data);
+		const userData = response.data?.data?.matchedUser;
+		if (!userData || !userData.userCalendar) {
+			console.error("Invalid response:", response.data);
+			return null;
+		}
 
-		return response.data.data.getStreakCounter;
+		return userData.userCalendar.streak;
+
 	} catch (error) {
 		console.error('Error fetching LeetCode profile:', error);
 		return null;
@@ -48,19 +64,13 @@ async function getStreak(name) {
 }
 
 async function displayStreak(name, interaction) {
-    // const channel = await client.channels.fetch(CHANNEL_ID);
-    // if (!channel) {
-    //     console.error('Invalid channel ID.');
-    //     return;
-    // }
-    const streak = await getStreak(name);
-    if (!streak) {
-        await interaction.reply('⚠️ Failed to fetch profile.');
-        return;
-    }
+	const streakInfo = await getStreak(name);
 
-    const { count, current } = streak.matchedUser;
+	if (streakInfo === null) {
+		await interaction.reply('⚠️ Failed to fetch profile. Make sure the username is correct.');
+		return;
+	}
 
-    const message = `🌟 **Name: ** ${name}\n**Streak: **${streak}`;
-    await interaction.reply(message);
+	const message = `🌟 **Username:** ${name}\n🔥 **Current Streak:** ${streakInfo} days`;
+	await interaction.reply(message);
 }
