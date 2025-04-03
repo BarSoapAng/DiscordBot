@@ -71,5 +71,15 @@ async function postDailyChallenge(interaction) {
     }[difficulty] || '❓';
 
     const message = `🌟 **LeetCode Daily Challenge (${challenge.date})** 🌟\n**${title}** ${difficultyEmoji} (${difficulty})\n🔗 ${link}`;
+
+    const Embed = new Discord.MessageEmbed()
+        .setColor("YELLOW")
+        .setTitle(`Daily Alert`)
+        .setDescription(message)
+        .setFooter("!sugest I would like marshmallows.")
+        message.channel.send(Embed)
+        message.react('👍');
+        message.react('👎');
+
     await interaction.reply(message);
 }
