@@ -1,10 +1,7 @@
 //require('dotenv').config();
-const { SlashCommandBuilder, Client, GatewayIntentBits } = require('discord.js');
+const { SlashCommandBuilder, Client, GatewayIntentBits, EmbedBuilder  } = require('discord.js');
 const axios = require('axios');
 const schedule = require('node-schedule');
-
-const TOKEN = process.env.DISCORD_TOKEN;
-const CHANNEL_ID = process.env.CHANNEL_ID;
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
@@ -70,16 +67,25 @@ async function postDailyChallenge(interaction) {
         Hard: '🔴'
     }[difficulty] || '❓';
 
-    const message = `🌟 **LeetCode Daily Challenge (${challenge.date})** 🌟\n**${title}** ${difficultyEmoji} (${difficulty})\n🔗 ${link}`;
+    const message = `🌟 **${title}** 🌟\n** ${difficultyEmoji} (${difficulty})`;
 
-    const Embed = new Discord.MessageEmbed()
-        .setColor("YELLOW")
-        .setTitle(`Daily Alert`)
-        .setDescription(message)
-        .setFooter("!sugest I would like marshmallows.")
-        message.channel.send(Embed)
-        message.react('👍');
-        message.react('👎');
+    const Embed = new EmbedBuilder()
+		.setColor(0xffd000)
+		.setTitle(`${challenge.date}`)
+        .setURL(link)
+		.setDescription(message)
 
-    await interaction.reply(message);
+        try {
+            const channel = interaction.client.channels.cache.get("1352311704050204793");
+            if (!channel) {
+                console.error('Channel not found!');
+                await interaction.reply('⚠️ Channel not found!');
+                return;
+            }
+    
+            await channel.send({ embeds: [Embed] });
+        } catch (error) {
+            console.error('Error sending message:', error);
+            await interaction.reply('⚠️ Failed to send the daily challenge.');
+        }
 }
