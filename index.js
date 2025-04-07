@@ -2,10 +2,14 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { Client, Events, GatewayIntentBits, Collection, REST, Routes } = require('discord.js');
 const { token, clientId, guildId } = require('./config.json');
+const schedule = require('node-schedule');
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
 client.once(Events.ClientReady, readyClient => {
 	console.log(`Ready! Logged in as ${readyClient.user.tag}`);
+	schedule.scheduleJob('0 20 * * *', 'America/New_York', async () => {
+        postDailyChallenge();
+    });
 });
 
 client.login(token);

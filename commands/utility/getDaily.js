@@ -75,17 +75,7 @@ async function postDailyChallenge(interaction) {
         .setURL(link)
 		.setDescription(message)
 
-        try {
-            const channel = interaction.client.channels.cache.get("1352311704050204793");
-            if (!channel) {
-                console.error('Channel not found!');
-                await interaction.reply('⚠️ Channel not found!');
-                return;
-            }
-    
-            await channel.send({ embeds: [Embed] });
-        } catch (error) {
-            console.error('Error sending message:', error);
-            await interaction.reply('⚠️ Failed to send the daily challenge.');
-        }
+        const channel = interaction.client.channels.cache.get("1352311704050204793");
+
+        await channel.send({ embeds: [Embed] });
 }
