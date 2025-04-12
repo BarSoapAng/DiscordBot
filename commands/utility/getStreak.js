@@ -1,4 +1,4 @@
-const { Client, SlashCommandBuilder, GatewayIntentBits } = require('discord.js');
+const { SlashCommandBuilder } = require('discord.js');
 const axios = require('axios');
 
 
@@ -59,6 +59,6 @@ async function displayStreak(name, interaction) {
 		return;
 	}
 
-	const message = `🌟 **ID:** ${name}\n🔥 **Max Streak:** ${streakInfo.streak} days`;
+	const message = `**ID:** ${name}\n**Max Streak:** ${streakInfo.streak} days`;
 	await interaction.reply(message);
 }

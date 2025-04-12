@@ -7,9 +7,6 @@ const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
 client.once(Events.ClientReady, readyClient => {
 	console.log(`Ready! Logged in as ${readyClient.user.tag}`);
-	schedule.scheduleJob('0 20 * * *', 'America/New_York', async () => {
-        postDailyChallenge();
-    });
 });
 
 client.login(token);
