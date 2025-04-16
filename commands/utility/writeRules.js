@@ -32,5 +32,7 @@ async function postRules(interaction) {
         await channel.send({ embeds: [Embed] });
 
         await interaction.reply('Rules have been posted in <#1352313584717402122>.');
+
+        console.log("Rules Updated.");
     
 }

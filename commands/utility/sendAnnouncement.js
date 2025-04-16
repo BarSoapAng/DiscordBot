@@ -21,16 +21,17 @@ module.exports = {
     
 async function postRules(interaction, ping, title, msg) {
 
-    const Embed = new EmbedBuilder()
-        .setColor(0xF18383)
-        .setTitle(`**${title}**`)
-        .setDescription(msg)
+        const Embed = new EmbedBuilder()
+                .setColor(0xF18383)
+                .setTitle(`**${title}**`)
+                .setDescription(msg)
 
-        const channel = interaction.client.channels.cache.get("1352133342408998946");
-        if(ping) { await channel.send("<@&1357905380981739764>"); }
-        
-        await channel.send({ embeds: [Embed] });
+                const channel = interaction.client.channels.cache.get("1352133342408998946");
+                if(ping) { await channel.send("<@&1357905380981739764>"); }
 
-        await interaction.reply(`New announcement posted in <#${1352133342408998946}>.`);
+                await channel.send({ embeds: [Embed] });
+
+                await interaction.reply(`New announcement posted in <#${1352133342408998946}>.`);
     
+        console.log("Sent announcement.");
 }
