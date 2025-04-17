@@ -7,7 +7,7 @@ const schedule = require('node-schedule');
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
-schedule.scheduleJob('16 19 * * *', postDailyChallenge);
+schedule.scheduleJob('0 20 * * *', postDailyChallenge);
 
 client.commands = new Collection();
 // Grab all the command folders from the commands directory you created earlier
