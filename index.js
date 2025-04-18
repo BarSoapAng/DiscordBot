@@ -100,24 +100,29 @@ async function getDailyLeetCodeChallenge() {
 async function postDailyChallenge() {
     const challenge = await getDailyLeetCodeChallenge();
 
-    const { title, difficulty } = challenge.question;
+    const { title, difficulty, topicTags } = challenge.question;
+    
     const link = `https://leetcode.com${challenge.link}`;
-    const difficultyEmoji = {
-        Easy: '🟢',
-        Medium: '🟡',
-        Hard: '🔴'
+    const color = {
+        Easy: 0x008000,
+        Medium: 0xFFD700,
+        Hard: 0xFF0000
     }[difficulty] || '❓';
 
-    const message = `🌟 **${title}** 🌟\n** ${difficultyEmoji} (${difficulty})`;
+    const tags = topicTags.map(tag => tag.name).join(', ');
 
     const Embed = new EmbedBuilder()
-        .setColor(0xffd000)
-        .setTitle(`${challenge.date}`)
-        .setURL(link)
-        .setDescription(message);
+		.setColor(color)
+		.setTitle(`🌟 ${title} 🌟`)
+		.setDescription(difficulty)
+        .setFields(
+            {name: '🔗 URL', value: link},
+            {name: '🏷️ Topics', value: tags}
+        )
 
     const channel = client.channels.cache.get("1352311704050204793");
 
+    await channel.send(`<@&1357169483059429447>`);
     await channel.send({ embeds: [Embed] });
 
 	console.log("Daily Updated.");
