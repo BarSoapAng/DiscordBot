@@ -12,22 +12,17 @@ schedule.scheduleJob('0 20 * * *', postDailyChallenge);
 client.commands = new Collection();
 // Grab all the command folders from the commands directory you created earlier
 function loadCommands() {
-    const foldersPath = path.join(__dirname, 'commands');
-    const commandFolders = fs.readdirSync(foldersPath);
 
-    for (const folder of commandFolders) {
-        const commandsPath = path.join(foldersPath, folder);
-        const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'));
+    const commandFiles = fs.readdirSync(__dirname).filter(file => file.endsWith('.js'));
 
-        for (const file of commandFiles) {
-            const filePath = path.join(commandsPath, file);
-            const command = require(filePath);
+    for (const file of commandFiles) {
+        const filePath = path.join(__dirname, file);
+        const command = require(filePath);
 
-            if ('data' in command && 'execute' in command) {
-                client.commands.set(command.data.name, command);
-            } else {
-                console.warn(`[WARNING] The command at ${filePath} is missing a required "data" or "execute" property.`);
-            }
+        if ('data' in command && 'execute' in command) {
+            client.commands.set(command.data.name, command);
+        } else {
+            console.warn(`[WARNING] The command at ${filePath} is missing a required "data" or "execute" property.`);
         }
     }
 }
