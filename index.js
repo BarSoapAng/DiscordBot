@@ -7,7 +7,12 @@ const schedule = require('node-schedule');
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
-schedule.scheduleJob('0 20 * * *', postDailyChallenge);
+client.once('ready', async () => {
+    console.log('Bot is ready!');
+    schedule.scheduleJob('0 0 * * *', postDailyChallenge);
+    postDailyChallenge();
+    console.log(new Date());
+});
 
 client.commands = new Collection();
 // Grab all the command folders from the commands directory you created earlier
@@ -115,12 +120,16 @@ async function postDailyChallenge() {
             {name: '🏷️ Topics', value: tags}
         )
 
-    const channel = client.channels.cache.get("1352311704050204793");
+    try {
+        const channel = await client.channels.fetch("1352311704050204793");
 
-    await channel.send(`<@&1357169483059429447>`);
-    await channel.send({ embeds: [Embed] });
+        await channel.send(`<@&1357169483059429447>`);
+        await channel.send({ embeds: [Embed] });
 
-	console.log("Daily Updated.");
+        console.log("Daily Updated.");
+    } catch (error) {
+        console.error("FAILED TO SEND MESSAGE:", error);
+    }
 
 }
 
